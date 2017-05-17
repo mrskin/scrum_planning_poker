@@ -1,6 +1,6 @@
 var express = require('express'),
-    app = express(),
-    config = require('./config');
+    app     = express(),
+    config  = require('./config');
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/views'));
