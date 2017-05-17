@@ -1,0 +1,20 @@
+{
+  "name": "sk_pointing_poker",
+  "version": "1.0.0",
+  "description": "SK Agile Pointing Poker Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'Run tests.'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.skintertainment.com:internal-admins/sk_pointing_poker.git"
+  },
+  "author": "SK Intertainment, Inc.",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2",
+    "redis": "^2.7.1",
+    "socket.io": "^2.0.1"
+  }
+}

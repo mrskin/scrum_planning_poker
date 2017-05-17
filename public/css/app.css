@@ -1,0 +1,89 @@
+/* Bootstrap Overrides */
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #f1f1f1;
+}
+
+.container {
+  width: 800px;
+}
+
+.form-horizontal .form-group {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* Login */
+.container.credentials {
+  position: absolute;
+  width: 400px;
+  height: 300px;
+  top: 50%;
+  left: 50%;
+  margin-left: -200px;
+  margin-top: -150px;
+}
+
+/* Poker */
+.container.poker {
+  position: absolute;
+  width: 1000px;
+  height: 400px;
+  top: 50%;
+  left: 50%;
+  margin-left: -500px;
+  margin-top: -200px;
+}
+  .poker .playing-cards {
+    position: relative;
+    display: block;
+  }
+
+    .poker .playing-cards a.card {
+      position: relative;
+      display: inline-block;
+      border-radius: 10px;
+      background-color: #fff;
+      border: 1px solid #8f8f8f;
+      width: 75px;
+      height: 100px;
+      margin: 10px;
+      cursor: pointer;
+      color: #333333;
+    }
+
+      .poker .playing-cards a.card:hover {
+        text-decoration: none;
+        border: 1px solid #000000;
+      }
+
+      .poker .playing-cards a.card.selected,
+      .poker .playing-cards a.card.selected:hover {
+        border: 1px solid #4582ec;
+        color: #4582ec;
+      }
+
+      .poker .playing-cards a.card span.number {
+        display: block;
+        text-align: center;
+        line-height: 100px;
+        font-size: 34px;
+        font-family: "Raleway","Helvetica Neue",Helvetica,Arial,sans-serif;
+      }
+
+/* Attendees */
+.attendees .h2 {
+  font-size: 24px;
+  text-transform: uppercase;
+  margin-top: 0;
+  line-height: 40px;
+}
+
+.attendees li .name {
+  display: block;
+  margin-right: 25px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
