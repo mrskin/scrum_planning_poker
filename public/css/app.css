@@ -52,7 +52,10 @@ html, body {
       cursor: pointer;
       color: #333333;
     }
-
+      .poker .playing-cards a.card:active,
+      .poker .playing-cards a.card:focus {
+        text-decoration: none;
+      }
       .poker .playing-cards a.card:hover {
         text-decoration: none;
         border: 1px solid #000000;
@@ -62,6 +65,7 @@ html, body {
       .poker .playing-cards a.card.selected:hover {
         border: 1px solid #4582ec;
         color: #4582ec;
+        background-color: #ecf3ff;
       }
 
       .poker .playing-cards a.card span.number {
@@ -80,10 +84,21 @@ html, body {
   line-height: 40px;
 }
 
+.attendees li .pull-left {
+  margin-right: 5px;
+}
+
 .attendees li .name {
   display: block;
   margin-right: 25px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.attendees li .fa.fa-observer::before {
+  content: "\f06e";
+}
+.attendees li .fa.fa-voter::before {
+  content: "\f007";
 }
