@@ -6,13 +6,6 @@ var express = require('express'),
     server  = null,
     userUniqueId = 0;
 
-
-console.log('===================== Websockets Server Starting =====================');
-console.log("\tSockets:");
-console.log("\t\tChannel: " + config.socket.channel);
-console.log("\t\tConnection: ws://" + config.socket.host + ":" + config.socket.port);
-server = ws.listen(config.socket.port);
-
 console.log('===================== Web Server Starting =====================');
 console.log("\tConnection: //0.0.0.0:" + config.web.port);
 app.use(express.static(__dirname + '/public'));
@@ -20,7 +13,9 @@ app.use(express.static(__dirname + '/views'));
 app.get('/',function(req,res){
   res.sendFile('index.html');
 });
-app.listen(config.web.port);
+
+
+server = ws.listen(app.listen(config.web.port));
 
 
 /* Websockets Handler */

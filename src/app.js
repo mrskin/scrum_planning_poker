@@ -1,5 +1,5 @@
 App.vent    = _.extend({}, Backbone.Events);
-App.socket  = io.connect(window.location.protocol+'//'+window.location.hostname+':1625');
+App.socket  = io.connect(location.origin.replace(/^http/, 'ws'));
 
 $(document).ready(function() {
   var USER_ROOM_ID = null,
