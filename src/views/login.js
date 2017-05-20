@@ -1,5 +1,14 @@
 App.LoginScreen = (function() {
-  var template = '<div class="container credentials">' +
+  var template =  _.template(
+                  '<div class="container login-card-bg">' +
+                    '<h1>Planning Poker <small>the simple way for co-located people</small></h1>' +
+                    '<div>' +
+                      '<% _.each(cards, function(card) {%>' +
+                        '<a href="javascript:void(0);" class="card" data-value=\'<%- card %>\'><span class="number"><%= card %></span></a>' +
+                      '<% }); %>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="container credentials">' +
                     '<div class="well well-sm">' +
                       '<form class="form-horizontal">' +
                         '<fieldset>' +
@@ -19,15 +28,25 @@ App.LoginScreen = (function() {
                         '</fieldset>' +
                       '</form>' +
                     '</div>' +
-                  '</div>';
+                  '</div>'
+                );
 
   return Backbone.View.extend({
-    template: _.template(template),
+    id: 'loginView',
+    template: template,
     events: {
       'submit form': 'onFormSubmit'
     },
     render: function() {
-      this.$el.html( this.template() );
+      var cards = App.Cards.concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards);
+
+      this.$el.html( this.template({cards: cards}) );
       return this;
     },
     onFormSubmit: function(e) {

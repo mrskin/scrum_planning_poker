@@ -10,7 +10,7 @@ Make sure you have [Node.js](http://nodejs.org/) and the [Heroku CLI](https://cl
 $ git clone
 $ cd sk_pointing_poker
 $ npm install
-$ npm start
+$ npm run start
 ```
 
 Your app should now be running on [localhost:5000](http://localhost:5000/).

@@ -1,7 +1,7 @@
 App.PokerCardsView = (function() {
   var View,
       template,
-      Cards = [0, '.5', 1, 2, 3, 5, 8, 13, 20, 40, 100, '<i class="fa fa-question"></i>', '<i class="fa fa-coffee"></i>'];
+      Cards = App.Cards.concat(['<i class="fa fa-question"></i>', '<i class="fa fa-coffee"></i>']);
 
   template = _.template(
               '<% _.each(cards, function(card) {%>' +

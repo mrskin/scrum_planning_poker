@@ -3,11 +3,10 @@ var express = require('express'),
     config  = require('./config'),
     ws      = require('socket.io')(),
     sockets = {},
-    server  = null,
-    userUniqueId = 0;
+    server  = null;
 
 console.log('===================== Web Server Starting =====================');
-console.log("\tConnection: //0.0.0.0:" + config.web.port);
+console.log("\tConnection: //0.0.0.0:" + config.port);
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/views'));
 app.get('/',function(req,res){
@@ -15,12 +14,12 @@ app.get('/',function(req,res){
 });
 
 
-server = ws.listen(app.listen(config.web.port));
+server = ws.listen(app.listen(config.port));
 
 
 /* Websockets Handler */
-var currentTitle = {},
-    ROOM_PREFIX = 'rt.room_',
+var votesVisible = {},
+    currentTitle = {},
     isEmptyRoom = function(room) {
       var empty = true;
       for(var i in sockets) {
@@ -32,17 +31,20 @@ var currentTitle = {},
     },
     removeRoom = function(room) {
       delete currentTitle[ room ];
+      delete votesVisible[room];
       return true;
     },
     sendToRoom = function(room, key, message) {
       ws.sockets
-        .in(ROOM_PREFIX+room)
+        .in(room)
         .send(key, message);
+      console.log('SEND: [' + room + '] ' + key + '>> "' + message + '"');
     },
-    broadcastToRoom = function(socket, room, key, message) {
-      socket.broadcast
-            .to(ROOM_PREFIX+room)
-            .emit(key, message);
+    broadcastToRoom = function(s, room, key, message) {
+      s.broadcast
+       .in(room)
+       .send(key, message);
+      console.log('BROADCAST: [' + room + '] ' + key + '>> "' + message + '"');
     },
     currentUsers = function(room) {
       var list = [];
@@ -53,13 +55,28 @@ var currentTitle = {},
       }
       return list;
     },
+    clearRoomVotes = function(room) {
+      var list = [];
+      for(var i in sockets) {
+        if (sockets[i].data.room == room) {
+          var data = {
+            id: sockets[i].data.id,
+            vote: null
+          };
+          sockets[i].data.vote = null;
+          sendToRoom(room, 'vote:update', data);
+        }
+      }
+      return list;
+    },
     logUserIn = function(socket, message) {
-      socket.join(ROOM_PREFIX + message.room);
+      socket.join(message.room);
       socket.send('authorized', message);
       console.log("Socket Event: Connect [" + JSON.stringify(message) + "]");
 
       sendToRoom(message.room, 'users:list', currentUsers(message.room));
       sendToRoom(message.room, 'title:update', currentTitle[message.room]);
+      sendToRoom(message.room, 'vote:display', votesVisible[message.room]);
     };
 
 server.on('connection', function(socket) {
@@ -96,6 +113,17 @@ server.on('connection', function(socket) {
     };
     sockets[socketId].data.vote = value;
     sendToRoom(room, 'vote:update', data);
+  });
+
+  socket.on('rt.vote:display', function() {
+    votesVisible[room] = true;
+    sendToRoom(room, 'vote:display', true);
+  });
+
+  socket.on('rt.vote:clear', function() {
+    clearRoomVotes(room);
+    votesVisible[room] = false;
+    sendToRoom(room, 'vote:display', false);
   });
 
   socket.on('disconnect',function(){

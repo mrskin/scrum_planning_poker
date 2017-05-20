@@ -1,6 +1,3 @@
-App.vent    = _.extend({}, Backbone.Events);
-App.socket  = io.connect(location.origin.replace(/^http/, 'ws'));
-
 $(document).ready(function() {
   var USER_ROOM_ID = null,
       socket      = App.socket,

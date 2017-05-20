@@ -10,6 +10,8 @@ App.MainView = (function() {
       this.subViews['screen'] = new App.PokerView({collection: this.collection, model: this.model});
       this.listenTo(App.vent, 'title:changed', this.onTitleSet.bind(this));
       this.listenTo(App.vent, 'vote:selected', this.onVoteSet.bind(this));
+      this.listenTo(App.vent, 'vote:display', this.onVoteDisplay.bind(this));
+      this.listenTo(App.vent, 'vote:clear', this.onVoteClear.bind(this));
       this.socket.on('message', this.onSocketMessage.bind(this));
     },
     remove: function() {
@@ -30,6 +32,12 @@ App.MainView = (function() {
     onVoteSet: function(value) {
       this.socket.emit('rt.vote', value);
     },
+    onVoteDisplay: function() {
+      this.socket.emit('rt.vote:display');
+    },
+    onVoteClear: function() {
+      this.socket.emit('rt.vote:clear');
+    },
     updateMemberVote: function(data) {
       model = this.collection.find({id: data.id});
       model.set('vote', data.vote);
@@ -49,6 +57,9 @@ App.MainView = (function() {
           break;
         case 'vote:update':
           this.updateMemberVote(message);
+          break;
+        case 'vote:display':
+          App.vent.trigger('vote:display_votes', message);
           break;
       }
     }

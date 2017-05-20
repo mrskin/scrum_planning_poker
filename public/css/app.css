@@ -14,8 +14,12 @@ html, body {
   margin-left: 0;
 }
 
+#content, #loginView {
+  height: 100%;
+}
+
 /* Login */
-.container.credentials {
+#loginView .container.credentials {
   position: absolute;
   width: 400px;
   height: 300px;
@@ -24,6 +28,17 @@ html, body {
   margin-left: -200px;
   margin-top: -150px;
 }
+
+#loginView .login-card-bg {
+  max-height: 100%;
+  overflow: hidden;
+}
+  #loginView .login-card-bg > div {
+    opacity: 0.4;
+  }
+  #loginView .login-card-bg > div a {
+    cursor: default;
+  }
 
 /* Poker */
 #poker-sharing {
@@ -49,7 +64,7 @@ html, body {
     display: block;
   }
 
-    .poker .playing-cards a.card {
+    a.card {
       position: relative;
       display: inline-block;
       border-radius: 10px;
@@ -61,13 +76,20 @@ html, body {
       cursor: pointer;
       color: #333333;
     }
-      .poker .playing-cards a.card:active,
-      .poker .playing-cards a.card:focus {
+      a.card:active,
+      a.card:focus {
         text-decoration: none;
       }
-      .poker .playing-cards a.card:hover {
+      a.card:hover {
         text-decoration: none;
         border: 1px solid #000000;
+      }
+      a.card span.number {
+        display: block;
+        text-align: center;
+        line-height: 100px;
+        font-size: 34px;
+        font-family: "Raleway","Helvetica Neue",Helvetica,Arial,sans-serif;
       }
 
       .poker .playing-cards a.card.selected,
@@ -75,14 +97,6 @@ html, body {
         border: 1px solid #4582ec;
         color: #4582ec;
         background-color: #ecf3ff;
-      }
-
-      .poker .playing-cards a.card span.number {
-        display: block;
-        text-align: center;
-        line-height: 100px;
-        font-size: 34px;
-        font-family: "Raleway","Helvetica Neue",Helvetica,Arial,sans-serif;
       }
 
 /* Attendees */

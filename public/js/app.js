@@ -1,4 +1,8 @@
-window.App = {};
+window.App = {
+  vent: _.extend({}, Backbone.Events),
+  socket: io.connect(location.origin.replace(/^http/, 'ws')),
+  Cards: [0, '.5', 1, 2, 3, 5, 8, 13, 20, 40, 100]
+};
 
 App.Router = (function() {
   var Router = Backbone.Router.extend({
@@ -75,24 +79,44 @@ App.AttendeesView = (function() {
                     '<span class="name"><%- user.username %></span>' +
                   '</li>' +
                 '<% }) %>' +
-              '</ul>'
+              '</ul>' +
+              '<button type="button" class="btn btn-sm btn-warning">Clear Board</button>' +
+              '<button type="button" class="btn btn-sm btn-info">Display Votes</button>'
               );
 
   View = Backbone.View.extend({
     template: template,
+    events: {
+      'click .btn-warning': 'onClearBoard',
+      'click .btn-info': 'onDisplayVotes'
+    },
     initialize: function(config) {
       Backbone.View.prototype.initialize.apply(this, arguments);
       this.listenTo(this.collection, 'add sort remove change reset', this.render);
+      this.listenTo(App.vent, 'vote:display_votes', this.displayVotes.bind(this));
+      this.forceDisplay = false;
     },
     render: function() {
       this.delegateEvents();
       this.$el.html(
         this.template({
           users: this.collection.toJSON(),
-          display: this.collection.displayVotes()
+          display: this.forceDisplay || this.collection.displayVotes()
         })
       );
       return this;
+    },
+    displayVotes: function(value) {
+      this.forceDisplay = value;
+      this.render();
+    },
+    onDisplayVotes: function(e) {
+      e.preventDefault();
+      App.vent.trigger('vote:display');
+    },
+    onClearBoard: function(e) {
+      e.preventDefault();
+      App.vent.trigger('vote:clear');
     }
   });
 
@@ -102,7 +126,7 @@ App.AttendeesView = (function() {
 App.PokerCardsView = (function() {
   var View,
       template,
-      Cards = [0, '.5', 1, 2, 3, 5, 8, 13, 20, 40, 100, '<i class="fa fa-question"></i>', '<i class="fa fa-coffee"></i>'];
+      Cards = App.Cards.concat(['<i class="fa fa-question"></i>', '<i class="fa fa-coffee"></i>']);
 
   template = _.template(
               '<% _.each(cards, function(card) {%>' +
@@ -265,7 +289,16 @@ App.PokerView = (function() {
 })();
 
 App.LoginScreen = (function() {
-  var template = '<div class="container credentials">' +
+  var template =  _.template(
+                  '<div class="container login-card-bg">' +
+                    '<h1>Planning Poker <small>the simple way for co-located people</small></h1>' +
+                    '<div>' +
+                      '<% _.each(cards, function(card) {%>' +
+                        '<a href="javascript:void(0);" class="card" data-value=\'<%- card %>\'><span class="number"><%= card %></span></a>' +
+                      '<% }); %>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="container credentials">' +
                     '<div class="well well-sm">' +
                       '<form class="form-horizontal">' +
                         '<fieldset>' +
@@ -285,15 +318,25 @@ App.LoginScreen = (function() {
                         '</fieldset>' +
                       '</form>' +
                     '</div>' +
-                  '</div>';
+                  '</div>'
+                );
 
   return Backbone.View.extend({
-    template: _.template(template),
+    id: 'loginView',
+    template: template,
     events: {
       'submit form': 'onFormSubmit'
     },
     render: function() {
-      this.$el.html( this.template() );
+      var cards = App.Cards.concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards)
+                           .concat(App.Cards);
+
+      this.$el.html( this.template({cards: cards}) );
       return this;
     },
     onFormSubmit: function(e) {
@@ -322,6 +365,8 @@ App.MainView = (function() {
       this.subViews['screen'] = new App.PokerView({collection: this.collection, model: this.model});
       this.listenTo(App.vent, 'title:changed', this.onTitleSet.bind(this));
       this.listenTo(App.vent, 'vote:selected', this.onVoteSet.bind(this));
+      this.listenTo(App.vent, 'vote:display', this.onVoteDisplay.bind(this));
+      this.listenTo(App.vent, 'vote:clear', this.onVoteClear.bind(this));
       this.socket.on('message', this.onSocketMessage.bind(this));
     },
     remove: function() {
@@ -341,6 +386,12 @@ App.MainView = (function() {
     },
     onVoteSet: function(value) {
       this.socket.emit('rt.vote', value);
+    },
+    onVoteDisplay: function() {
+      this.socket.emit('rt.vote:display');
+    },
+    onVoteClear: function() {
+      this.socket.emit('rt.vote:clear');
     },
     updateMemberVote: function(data) {
       model = this.collection.find({id: data.id});
@@ -362,15 +413,15 @@ App.MainView = (function() {
         case 'vote:update':
           this.updateMemberVote(message);
           break;
+        case 'vote:display':
+          App.vent.trigger('vote:display_votes', message);
+          break;
       }
     }
   });
 
   return View;
 })();
-
-App.vent    = _.extend({}, Backbone.Events);
-App.socket  = io.connect(location.origin.replace(/^http/, 'ws'));
 
 $(document).ready(function() {
   var USER_ROOM_ID = null,

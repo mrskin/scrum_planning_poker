@@ -24,24 +24,44 @@ App.AttendeesView = (function() {
                     '<span class="name"><%- user.username %></span>' +
                   '</li>' +
                 '<% }) %>' +
-              '</ul>'
+              '</ul>' +
+              '<button type="button" class="btn btn-sm btn-warning">Clear Board</button>' +
+              '<button type="button" class="btn btn-sm btn-info">Display Votes</button>'
               );
 
   View = Backbone.View.extend({
     template: template,
+    events: {
+      'click .btn-warning': 'onClearBoard',
+      'click .btn-info': 'onDisplayVotes'
+    },
     initialize: function(config) {
       Backbone.View.prototype.initialize.apply(this, arguments);
       this.listenTo(this.collection, 'add sort remove change reset', this.render);
+      this.listenTo(App.vent, 'vote:display_votes', this.displayVotes.bind(this));
+      this.forceDisplay = false;
     },
     render: function() {
       this.delegateEvents();
       this.$el.html(
         this.template({
           users: this.collection.toJSON(),
-          display: this.collection.displayVotes()
+          display: this.forceDisplay || this.collection.displayVotes()
         })
       );
       return this;
+    },
+    displayVotes: function(value) {
+      this.forceDisplay = value;
+      this.render();
+    },
+    onDisplayVotes: function(e) {
+      e.preventDefault();
+      App.vent.trigger('vote:display');
+    },
+    onClearBoard: function(e) {
+      e.preventDefault();
+      App.vent.trigger('vote:clear');
     }
   });
 
