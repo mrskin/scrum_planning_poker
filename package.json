@@ -4,6 +4,7 @@
   "description": "SK Agile Pointing Poker Application",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "node_modules/karma/bin/karma start ./karma.conf.js"
   },
   "repository": {
