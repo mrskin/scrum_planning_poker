@@ -6,7 +6,7 @@ App.AttendeesView = (function() {
               '<p class="h2">Awesome People</p>' +
               '<ul class="list-group">' +
                 '<% _.each(users, function(user) {%>'+
-                  '<li class="list-group-item observer">' +
+                  '<li class="list-group-item <%=user.type %>">' +
                     '<span class="pull-left">' +
                       '<i class="fa fa-<%=user.type %>"></i>' +
                     '</span>' +
@@ -17,7 +17,7 @@ App.AttendeesView = (function() {
                         '<% } else { %>'+
                           '<i class="fa fa-check"></i>' +
                         '<% }; %>'+
-                      '<% } else { %>'+
+                      '<% } else if (user.type == \'voter\') { %>'+
                         '<i class="fa fa-commenting-o"></i>' +
                       '<% }; %>'+
                     '</span>' +
@@ -31,30 +31,17 @@ App.AttendeesView = (function() {
     template: template,
     initialize: function(config) {
       Backbone.View.prototype.initialize.apply(this, arguments);
-      this.listenTo(this.collection, 'add', this.render);
-      this.listenTo(this.collection, 'remove', this.render);
-      this.listenTo(this.collection, 'change', this.render);
-      this.listenTo(this.collection, 'reset', this.render);
+      this.listenTo(this.collection, 'add sort remove change reset', this.render);
     },
     render: function() {
       this.delegateEvents();
       this.$el.html(
         this.template({
           users: this.collection.toJSON(),
-          display: this.displayVotes()
+          display: this.collection.displayVotes()
         })
       );
       return this;
-    },
-    displayVotes: function() {
-      var display = true;
-      _.each(this.collection.models, function(model) {
-        if (model.get('type') == 'voter' && !model.get('vote')) {
-          display = false;
-        }
-      });
-
-      return display;
     }
   });
 

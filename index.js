@@ -24,60 +24,87 @@ app.listen(config.web.port);
 
 
 /* Websockets Handler */
-var currentTitle = null,
-    currentUsers = function() {
+var currentTitle = {},
+    ROOM_PREFIX = 'rt.room_',
+    isEmptyRoom = function(room) {
+      var empty = true;
+      for(var i in sockets) {
+        if (sockets[i].data.room == room) {
+          empty = false;
+        }
+      }
+      return empty;
+    },
+    removeRoom = function(room) {
+      delete currentTitle[ room ];
+      return true;
+    },
+    sendToRoom = function(room, key, message) {
+      ws.sockets
+        .in(ROOM_PREFIX+room)
+        .send(key, message);
+    },
+    currentUsers = function(room) {
       var list = [];
       for(var i in sockets) {
-        list.push(sockets[i].data);
+        if (sockets[i].data.room == room) {
+          list.push(sockets[i].data);
+        }
       }
       return list;
     },
-    logUserIn = function(socket) {
-      socket.send('users:list', currentUsers());
-      socket.send('title:update', currentTitle);
+    logUserIn = function(socket, message) {
+      socket.join(ROOM_PREFIX + message.room);
+      socket.send('authorized', message);
+      console.log("Socket Event: Connect [" + JSON.stringify(message) + "]");
+
+      sendToRoom(message.room, 'users:list', currentUsers(message.room));
+      sendToRoom(message.room, 'title:update', currentTitle[message.room]);
     };
 
 server.on('connection', function(socket) {
-  var socketId = socket.id,
-      user_id;
+  var socketId  = socket.id,
+      user_id   = Math.random().toString(36).slice(2),
+      room      = null;
 
+  // Users Join a Room & Logs in.
   socket.on('rt.user', function(message) {
-    userUniqueId++;
+    // Data
+    room = message.room;
     if (message.id) {
       user_id = message.id;
-      userUniqueId = userUniqueId * 2;
     } else {
-      user_id = message.id = userUniqueId;
+      message.id = user_id;
     }
 
-    console.log("Socket Event: Connect [" + JSON.stringify(message) + "]");
-    username = message.username;
-
     sockets[socketId] = { data: message, socket: socket };
-    socket.send('authorized', message);
-    ws.sockets.send('users:add', message);
-    logUserIn(socket);
+    logUserIn(socket, message);
   });
 
-  socket.on('rt.title', function(message) {
-    console.log("Socket Event: Update Title [" + message + "]");
-    currentTitle = message;
-    ws.sockets.send('title:update', message);
+  socket.on('rt.title', function(title) {
+    console.log("Socket Event: Update Title [" + title + "]");
+    currentTitle[room] = title;
+    sendToRoom(room, 'title:update', title);
   });
 
-  socket.on('rt.vote', function(message) {
-    console.log("Socket Event: Update Vote [" + message + "]");
-    sockets[socketId].data.vote = message;
-    ws.sockets.send('vote:update', {
+  socket.on('rt.vote', function(value) {
+    console.log("Socket Event: Update Vote [" + value + "]");
+
+    var data = {
       id: sockets[socketId].data.id,
-      vote: message
-    });
+      vote: value
+    };
+    sockets[socketId].data.vote = value;
+    sendToRoom(room, 'vote:update', data);
   });
 
   socket.on('disconnect',function(){
     console.log("Socket Event: Disconnect");
-    ws.sockets.send('users:remove', user_id);
+    sendToRoom(room, 'users:remove', user_id);
     delete sockets[socketId];
+    if (isEmptyRoom(room)) {
+      removeRoom(room);
+    }
   });
 
   socket.on('message', function(message) {

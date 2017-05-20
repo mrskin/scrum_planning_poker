@@ -4,7 +4,7 @@
   "description": "SK Agile Pointing Poker Application",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'Run tests.'"
+    "test": "node_modules/karma/bin/karma start ./karma.conf.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,18 @@
     "express": "^4.15.2",
     "redis": "^2.7.1",
     "socket.io": "^2.0.1"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-uglify": "^3.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "jasmine": "^2.6.0",
+    "jasmine-core": "^2.6.2",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "sinon": "^2.2.0"
   }
 }

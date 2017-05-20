@@ -26,6 +26,12 @@ html, body {
 }
 
 /* Poker */
+#poker-sharing {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 450px;
+}
 .container.poker {
   position: absolute;
   width: 1000px;
