@@ -39,6 +39,11 @@ var currentTitle = {},
         .in(ROOM_PREFIX+room)
         .send(key, message);
     },
+    broadcastToRoom = function(socket, room, key, message) {
+      socket.broadcast
+            .to(ROOM_PREFIX+room)
+            .emit(key, message);
+    },
     currentUsers = function(room) {
       var list = [];
       for(var i in sockets) {
@@ -79,7 +84,7 @@ server.on('connection', function(socket) {
   socket.on('rt.title', function(title) {
     console.log("Socket Event: Update Title [" + title + "]");
     currentTitle[room] = title;
-    sendToRoom(room, 'title:update', title);
+    broadcastToRoom(socket, room, 'title:update', title);
   });
 
   socket.on('rt.vote', function(value) {
