@@ -32,6 +32,9 @@ html, body {
   right: 0;
   width: 450px;
 }
+#observerView {
+  padding-top: 35px;
+}
 .container.poker {
   position: absolute;
   width: 1000px;

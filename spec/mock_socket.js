@@ -1,7 +1,8 @@
 var socketMock = {
   send: function() {},
   emit: function() {},
-  on: function() {}
+  on: function() {},
+  off: function() {}
 };
 var ioStub = sinon.stub(io, 'connect')
                   .returns(socketMock);

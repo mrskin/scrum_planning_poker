@@ -1,10 +1,6 @@
 App.MainView = (function() {
   var View;
 
-  var joinRoom = function(socket, room) {
-    socket.emit('rt.room', room);
-  };
-
   View = Backbone.View.extend({
     initialize: function(config) {
       Backbone.View.prototype.initialize.apply(this, arguments);

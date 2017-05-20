@@ -1,5 +1,8 @@
 describe('Login Screen', function() {
   beforeEach(function() {
+    if (/\#roomname/.test(window.location.href) == false) {
+      window.location.href = window.location.href + '#roomname';
+    }
     this.view = new App.LoginScreen();
     $('body').append( this.view.render().el );
   });
@@ -46,7 +49,8 @@ describe('Login Screen', function() {
       expect(this.socket.emit)
         .toHaveBeenCalledWith('rt.user',
                               { username: 'some user name',
-                                type: 'voter'})
+                                type: 'voter',
+                                room: 'roomname'})
     });
   });
 });

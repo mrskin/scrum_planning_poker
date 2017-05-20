@@ -55,8 +55,6 @@ $(document).ready(function() {
   /* Socket Listeners */
   socket.on('reconnect', function() {
     socket.emit('rt.user', user);
-    // We need to let the server know?
-    // socket.emit('rt.title', story.get('title'));
   });
 
   socket.on('disconnect', function() {
@@ -79,7 +77,7 @@ $(document).ready(function() {
     router.navigate(Math.random().toString(36).slice(2), {trigger: true});
   });
 
-  router.on('route:roomNumber', function(room) {
+  router.on('route:room', function(room) {
     USER_ROOM_ID = room;
     if (authenticated()) {
       App.vent.trigger('user:login', user.username, user.type);
