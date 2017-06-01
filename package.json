@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.skintertainment.com:internal-admins/sk_pointing_poker.git"
+    "url": "git@github.com:mrskin/scrum_planning_poker.git"
   },
   "author": "SK Intertainment, Inc.",
   "license": "ISC",
