@@ -1,7 +1,7 @@
 {
-  "name": "sk_pointing_poker",
+  "name": "scrum_pointing_poker",
   "version": "1.0.0",
-  "description": "SK Agile Pointing Poker Application",
+  "description": "Scrum Pointing Poker Application",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -12,7 +12,7 @@
     "url": "git@github.com:mrskin/scrum_planning_poker.git"
   },
   "author": "SK Intertainment, Inc.",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.15.2",
     "redis": "^2.7.1",
