@@ -1,6 +1,13 @@
-# Simple Pointing Poker
+# Simple Planning Poker
 
-Realtime Pointing Poker.
+[Planning Poker](https://en.wikipedia.org/wiki/Planning_poker)
+
+### Features:
+
+* Realtime (WebSockets)
+* Individual Rooms
+* Remembers your "Callsign"
+* Reusable links
 
 ## Running Locally
 
