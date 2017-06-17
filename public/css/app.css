@@ -125,3 +125,12 @@ html, body {
 .attendees li .fa.fa-voter::before {
   content: "\f007";
 }
+
+/* Stats */
+.stats tr {
+  background-color: #fff;
+}
+
+.stats th {
+  background-color: #eee;
+}

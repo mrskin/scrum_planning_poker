@@ -4,8 +4,8 @@ App.StatsView = (function() {
 
   template = _.template('\
     <p class="h2">Statistics</p>\
-    <table class="table table-bordered table-striped">\
-      <thead class="thead-default">\
+    <table class="table table-bordered">\
+      <thead>\
         <tr>\
           <th>Vote</th>\
           <th>Total</th>\
