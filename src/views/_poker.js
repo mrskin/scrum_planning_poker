@@ -1,13 +1,14 @@
 App.PokerView = (function() {
   var View,
       template,
-      AttendeesViews = App.AttendeesView,
-      CardsView      = App.PokerCardsView,
-      ObserverView   = App.PokerObserverView;
+      AttendeesView = App.AttendeesView,
+      StatsView     = App.StatsView,
+      CardsView     = App.PokerCardsView,
+      ObserverView  = App.PokerObserverView;
 
   template =  _.template('<div class="container poker">' +
                 '<div class="row">' +
-                  '<div class="col-xs-9">' +
+                  '<div class="col-xs-7">' +
                     '<p class="h5 text-right"><span class="username"></span> <a href="javascript:void(0);" class="logout">(logout)</a></p>' +
                     '<input type="text" class="form-control" id="title" placeholder="Task title">' +
                     '<div class="playing-cards">' +
@@ -17,6 +18,10 @@ App.PokerView = (function() {
 
                   '<div class="col-xs-3 attendees">' +
                     /* Attendees View Render Here */
+                  '</div>' +
+
+                  '<div class="col-xs-2 stats">' +
+                    /* Stats View Render Here */
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -38,7 +43,8 @@ App.PokerView = (function() {
     initialize: function(config) {
       Backbone.View.prototype.initialize.apply(this, arguments);
       this.subViews = {};
-      this.subViews['attendees'] = new AttendeesViews({collection: this.collection});
+      this.subViews['attendees'] = new AttendeesView({collection: this.collection});
+      this.subViews['stats'] = new StatsView({collection: this.collection});
       this.subViews['cards'] = new CardsView();
       this.subViews['observer'] = new ObserverView({collection: this.collection});
     },
@@ -47,6 +53,9 @@ App.PokerView = (function() {
       this.$el.find('#share').val( window.location.href );
       this.$el.find('.attendees').html(
         this.subViews.attendees.render().el
+      );
+      this.$el.find('.stats').html(
+        this.subViews.stats.render().el
       );
       if (this.model.get('type') == 'observer') {
         this.$el.find('.playing-cards').html(
