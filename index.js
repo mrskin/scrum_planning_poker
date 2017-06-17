@@ -124,6 +124,7 @@ server.on('connection', function(socket) {
     clearRoomVotes(room);
     votesVisible[room] = false;
     sendToRoom(room, 'vote:display', false);
+    sendToRoom(room, 'title:update', null);
   });
 
   socket.on('disconnect',function(){

@@ -141,6 +141,7 @@ App.PokerCardsView = (function() {
     },
     initialize: function(config) {
       Backbone.View.prototype.initialize.apply(this, arguments);
+      this.listenTo(App.vent, 'vote:clear', this.onVoteClear.bind(this));
     },
     render: function() {
       this.delegateEvents();
@@ -162,6 +163,10 @@ App.PokerCardsView = (function() {
         this.$el.find('a.card').removeClass('selected');
       }
       App.vent.trigger('vote:selected', vote);
+    },
+    onVoteClear: function() {
+      this.$el.find('a.card')
+              .removeClass('selected');
     }
   });
 
