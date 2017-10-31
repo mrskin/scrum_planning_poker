@@ -570,6 +570,7 @@ $(document).ready(function() {
 
   socket.on('disconnect', function() {
     /* Show D/C overlay */
+    //
   });
 
   socket.on('message', function(title, message) {
